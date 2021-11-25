@@ -1,0 +1,22 @@
+{
+  "name": "desafio-pagar.me",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "start": "tsc && node ./build/src/index.js",
+    "dev": "ts-node-dev ./src/index.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CaiqueSLima/desafio-pagar.me.git"
+  },
+  "keywords": [],
+  "author": "Caíque Souto Lima",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/CaiqueSLima/desafio-pagar.me/issues"
+  },
+  "homepage": "https://github.com/CaiqueSLima/desafio-pagar.me#readme"
+}
