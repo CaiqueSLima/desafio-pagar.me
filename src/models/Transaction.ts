@@ -1,8 +1,15 @@
+import { CustomError } from "../error/CustomError"
+
+export enum PaymentMethod {
+    CREDIT_CARD = 'credit_card',
+    DEBIT_CARD = 'debit_card'
+}
+
 export interface TransactionData {
     id: string
     value: number
     description: string
-    payment_method: string
+    payment_method: PaymentMethod
     card_number: number
     card_owner: string
     card_exp_date: string
@@ -31,12 +38,23 @@ export class Transaction {
     public getCardExpDate = (): string => this.cardExpDate
     public getCardCVV = (): number => this.cardCVV
 
+    public static stringToPaymentMethod(cardType: string): PaymentMethod {
+        switch (cardType.toLowerCase()) {
+            case 'credit_card':
+                return PaymentMethod.CREDIT_CARD;
+            case 'debit_card':
+                return PaymentMethod.DEBIT_CARD;
+            default:
+                throw new CustomError('Invalid card type')
+        }
+    }
+
     public static toTransactionModel(transaction: TransactionData): Transaction {
         return new Transaction(
             transaction.id,
             transaction.value,
             transaction.description,
-            transaction.payment_method,
+            Transaction.stringToPaymentMethod(transaction.payment_method),
             transaction.card_number,
             transaction.card_owner,
             transaction.card_exp_date,
