@@ -1,3 +1,10 @@
+import { CustomError } from "../error/CustomError"
+
+export enum PayableStatus {
+    PAID = 'paid',
+    WAITING_FUNDS = 'waiting_funds'
+}
+
 export interface PayableData {
     id: string
     value: number
@@ -18,6 +25,17 @@ export class Payable {
     public getValue = (): number => this.value
     public getStatus = (): string => this.status
     public getPaymentDate = (): string => this.paymentDate
+
+    public static stringToStatus(status: string): PayableStatus {
+        switch (status.toLowerCase()) {
+            case 'paid':
+                return PayableStatus.PAID;
+            case 'waiting_funds':
+                return PayableStatus.WAITING_FUNDS;
+            default:
+                throw new CustomError('Invalid status')
+        }
+    }
 
     public static toPayableModel(payable: PayableData): Payable {
         return new Payable(
