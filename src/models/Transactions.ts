@@ -1,4 +1,5 @@
 export interface TransactionData {
+    id: string
     value: number
     description: string
     payment_method: string
@@ -11,6 +12,7 @@ export interface TransactionData {
 export class Transaction {
 
     constructor(
+        private id: string,
         private value: number,
         private description: string,
         private paymentMethod: string,
@@ -20,6 +22,7 @@ export class Transaction {
         private cardCVV: number
     ) { }
 
+    public getId = (): string => this.id
     public getValue = (): number => this.value
     public getDescription = (): string => this.description
     public getPaymentMethod = (): string => this.paymentMethod
@@ -30,6 +33,7 @@ export class Transaction {
 
     public static toTransactionModel(transaction: TransactionData): Transaction {
         return new Transaction(
+            transaction.id,
             transaction.value,
             transaction.description,
             transaction.payment_method,
