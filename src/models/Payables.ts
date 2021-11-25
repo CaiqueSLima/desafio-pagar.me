@@ -41,7 +41,7 @@ export class Payable {
         return new Payable(
             payable.id,
             payable.value, 
-            payable.status,
+            Payable.stringToStatus(payable.status),
             payable.paymentDate
         )
     }
