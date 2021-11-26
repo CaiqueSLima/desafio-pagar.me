@@ -1,14 +1,10 @@
-import { PayableDatabase } from "../data/PayableDatabase"
 import { CustomError } from "../error/CustomError"
 import { Transaction } from "../models/Transaction"
 import { IdGenerator } from "../services/IdGenerator"
 import { PayableBusiness } from "./PayableBusiness"
 import { ITransactionDatabase } from "./ports/ITransactionDatabase"
 
-
-const payableBusiness = new PayableBusiness(new IdGenerator(), new PayableDatabase())
-
-export interface TransactionInputDTO {
+export interface TransactionDTO {
     value: number
     description: string
     paymentMethod: string
@@ -22,10 +18,11 @@ export class TransactionBusiness {
 
     constructor(
         private idGenerator: IdGenerator,
-        private transactionDatabase: ITransactionDatabase
+        private transactionDatabase: ITransactionDatabase,
+        private payableBusiness: PayableBusiness
     ) { }
 
-    public async createTransactionLogic(transaction: TransactionInputDTO): Promise<void> {
+    public async createTransactionLogic(transaction: TransactionDTO): Promise<void> {
 
         const {
             value,
@@ -66,10 +63,29 @@ export class TransactionBusiness {
         )
         
         // Before persisting the transaction, we create a new payable with its own validations
-        await payableBusiness.createPayableLogic(newTransaction)
+        await this.payableBusiness.createPayableLogic(newTransaction)
 
         await this.transactionDatabase.createTransaction(newTransaction)
+    }
 
+    public async getTransactions(): Promise<TransactionDTO[]> {
+
+        const transactions = await this.transactionDatabase.getTransactions()
+
+        const result: TransactionDTO[] = transactions.map(transaction => {
+            return {
+                id: transaction.id,
+                value: transaction.value,
+                description: transaction.description,
+                paymentMethod: transaction.payment_method,
+                cardNumber: transaction.card_number,
+                cardOwner: transaction.card_owner,
+                cardExpDate: transaction.card_exp_date,
+                cardCVV: transaction.card_CVV
+            }
+        })
+
+        return result
     }
 
 }

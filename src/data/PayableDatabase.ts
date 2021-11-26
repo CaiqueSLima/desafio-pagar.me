@@ -1,3 +1,4 @@
+import { IPayableDatabase } from "../business/ports/IPayableDatabase"
 import { Payable } from "../models/Payables"
 import { BaseDatabase } from "./BaseDatabase"
 
@@ -8,7 +9,7 @@ export interface PayableData {
     payment_date: string
 }
 
-export class PayableDatabase extends BaseDatabase {
+export class PayableDatabase extends BaseDatabase implements IPayableDatabase {
 
     private static TABLE_NAME = 'pagar.me_payables'
 
