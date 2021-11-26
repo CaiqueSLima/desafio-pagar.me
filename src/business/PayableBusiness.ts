@@ -88,8 +88,5 @@ export class PayableBusiness {
         } catch (error: any) {
             throw new CustomError(error.message)
         }
-
-
     }
-
 }

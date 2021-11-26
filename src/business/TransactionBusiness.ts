@@ -107,10 +107,5 @@ export class TransactionBusiness {
         } catch (error: any) {
             throw new CustomError(error.message)
         }
-
-
     }
-
 }
-
-
