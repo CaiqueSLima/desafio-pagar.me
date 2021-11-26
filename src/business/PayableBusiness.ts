@@ -44,7 +44,7 @@ export class PayableBusiness {
 
         const id: string = this.idGenerator.generate()
 
-        const newPayable = new Payable(id, value, payableStatus, paymentDate)
+        const newPayable = new Payable(id, value, payableStatus, paymentDate, transaction.getId())
 
         await this.payableDatabase.createPayable(newPayable)
     }

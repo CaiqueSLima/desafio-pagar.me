@@ -11,13 +11,15 @@ export class Payable {
         private id: string,
         private value: number,
         private status: string,
-        private paymentDate: string
+        private paymentDate: string,
+        private transactionId: string
     ) { }
 
     public getId = (): string => this.id
     public getValue = (): number => this.value
     public getStatus = (): string => this.status
     public getPaymentDate = (): string => this.paymentDate
+    public getTransactionId = (): string => this.transactionId
 
     public static stringToStatus(status: string): PayableStatus {
         switch (status.toLowerCase()) {
@@ -34,13 +36,15 @@ export class Payable {
         id: string,
         value: number,
         status: string,
-        paymentDate: string
+        paymentDate: string,
+        transactionId: string
     ): Payable {
         return new Payable(
             id,
             value, 
             Payable.stringToStatus(status),
-            paymentDate
+            paymentDate,
+            transactionId
         )
     }
 }

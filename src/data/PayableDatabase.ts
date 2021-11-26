@@ -7,6 +7,7 @@ export interface PayableData {
     value: number
     status: string
     payment_date: string
+    transaction_id: string
 }
 
 export class PayableDatabase extends BaseDatabase implements IPayableDatabase {
@@ -19,7 +20,8 @@ export class PayableDatabase extends BaseDatabase implements IPayableDatabase {
             id: payable.getId(),
             value: payable.getValue(),
             status: payable.getStatus(),
-            payment_date: payable.getPaymentDate()
+            payment_date: payable.getPaymentDate(),
+            transaction_id: payable.getTransactionId()
         }
 
         await BaseDatabase.connection(PayableDatabase.TABLE_NAME).insert(payableToDB)
