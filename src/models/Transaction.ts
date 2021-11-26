@@ -1,19 +1,9 @@
 import { CustomError } from "../error/CustomError"
+import { TransactionData } from '../data/TransactionDatabase'
 
 export enum PaymentMethod {
     CREDIT_CARD = 'credit_card',
     DEBIT_CARD = 'debit_card'
-}
-
-export interface TransactionData {
-    id: string
-    value: number
-    description: string
-    payment_method: PaymentMethod
-    card_number: number
-    card_owner: string
-    card_exp_date: string
-    card_CVV: number
 }
 
 export class Transaction {
@@ -49,16 +39,25 @@ export class Transaction {
         }
     }
 
-    public static toTransactionModel(transaction: TransactionData): Transaction {
+    public static toTransactionModel(
+        id: string,
+        value: number,
+        description: string,
+        paymentMethod: string,
+        cardNumber: number,
+        cardOwner: string,
+        cardExpDate: string,
+        cardCVV: number
+    ): Transaction {
         return new Transaction(
-            transaction.id,
-            transaction.value,
-            transaction.description,
-            Transaction.stringToPaymentMethod(transaction.payment_method),
-            transaction.card_number,
-            transaction.card_owner,
-            transaction.card_exp_date,
-            transaction.card_CVV
+            id,
+            value,
+            description,
+            Transaction.stringToPaymentMethod(paymentMethod),
+            cardNumber,
+            cardOwner,
+            cardExpDate,
+            cardCVV
         )
     }
 }

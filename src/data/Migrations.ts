@@ -1,7 +1,7 @@
 import { BaseDatabase } from "./BaseDatabase"
 
-class Migrations extends BaseDatabase {
-    public async main() {
+abstract class Migrations extends BaseDatabase {
+    public static async main() {
         try {
             await BaseDatabase.connection.raw(`
             CREATE TABLE IF NOT EXISTS pagar.me_transactions (
@@ -34,4 +34,4 @@ class Migrations extends BaseDatabase {
     }
 }
 
-new Migrations().main()
+Migrations.main()
