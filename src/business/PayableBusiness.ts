@@ -16,7 +16,7 @@ export class PayableBusiness {
         private payableDatabase: PayableDatabase
     ) { }
 
-    public async createPayableLogic(transaction: Transaction): Promise<void> {
+    public createPayableLogic(transaction: Transaction): Payable {
 
         const debitCardFee = 0.97
         const creditCardFee = 0.95
@@ -46,42 +46,50 @@ export class PayableBusiness {
 
         const newPayable = new Payable(id, value, payableStatus, paymentDate, transaction.getId())
 
-        await this.payableDatabase.createPayable(newPayable)
+        return newPayable
     }
 
     public async getBalance(): Promise<BalanceOutputDTO> {
 
-        const payables = await this.payableDatabase.getPayables()
+        try {
 
-        if(!payables.length) {
-            throw new CustomError('No payable found', 404)
-        }
+            const payables = await this.payableDatabase.getPayables()
 
-        let availableArr = []
-        let waitingFundsArr = []
-
-        for (const payable of payables) {
-            if (payable.status === 'paid') {
-                availableArr.push(payable)
-            } else {
-                waitingFundsArr.push(payable)
+            if (!payables.length) {
+                throw new CustomError('No payable found', 404)
             }
+
+            let availableArr = []
+            let waitingFundsArr = []
+
+            for (const payable of payables) {
+                if (payable.status === 'paid') {
+                    availableArr.push(payable)
+                } else {
+                    waitingFundsArr.push(payable)
+                }
+            }
+
+            const totalAvailable: number = availableArr.reduce(function (a, b) {
+                return a + b.value
+            }, 0)
+
+            const totalWaitingFunds: number = waitingFundsArr.reduce(function (a, b) {
+                return a + b.value
+            }, 0)
+
+            const balance: BalanceOutputDTO = {
+                available: totalAvailable,
+                waitingFunds: totalWaitingFunds
+            }
+
+            return balance
+
+        } catch (error: any) {
+            throw new CustomError(error.message)
         }
 
-        const totalAvailable: number = availableArr.reduce(function(a, b) {
-            return a + b.value
-        }, 0)
 
-        const totalWaitingFunds: number = waitingFundsArr.reduce(function(a, b) {
-            return a + b.value
-        }, 0)
-
-        const balance: BalanceOutputDTO = {
-            available: totalAvailable,
-            waitingFunds: totalWaitingFunds
-        }
-
-        return balance
     }
 
 }

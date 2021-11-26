@@ -15,7 +15,7 @@ export interface TransactionData {
 
 export class TransactionDatabase extends BaseDatabase implements ITransactionDatabase {
 
-    private static TABLE_NAME = 'pagar.me_transactions'
+    private static TABLE_NAME = 'pagar_me_transactions'
 
     public async createTransaction(transaction: Transaction): Promise<void> {
 

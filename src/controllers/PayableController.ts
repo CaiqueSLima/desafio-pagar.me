@@ -12,13 +12,13 @@ export class PayableController {
     public async getBalance(req: Request, res: Response): Promise<void> {
         try {
 
-            const result: BalanceOutputDTO = await payableBusiness.getBalance() 
+            const result: BalanceOutputDTO = await payableBusiness.getBalance()
 
-            res.status(200).send(result)
+            res.status(200).send({ balance: result })
 
         } catch (error: any) {
-            
-            res.status(error.statusCode).send({ message: error.sqlMessage || error.message })
+
+            res.status(error.statusCode).send({ message: error.message })
         }
     }
 }

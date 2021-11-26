@@ -8,7 +8,8 @@ import { IdGenerator } from '../services/IdGenerator'
 const transactionBusiness = new TransactionBusiness(
     new IdGenerator(),
     new TransactionDatabase(),
-    new PayableBusiness(new IdGenerator(), new PayableDatabase())
+    new PayableBusiness(new IdGenerator(), new PayableDatabase()),
+    new PayableDatabase()
 )
 
 export class TransactionController {
@@ -30,7 +31,7 @@ export class TransactionController {
             res.status(200).send({ message: 'Transaction processed' })
 
         } catch (error: any) {
-            res.status(error.statusCode).send({ message: error.sqlMessage || error.message })
+            res.status(error.statusCode).send({ message: error.message })
         }
     }
 
@@ -41,7 +42,7 @@ export class TransactionController {
 
             res.status(200).send({ transactions: result })
         } catch (error: any) {
-            res.status(error.statusCode).send({ message: error.sqlMessage || error.message })
+            res.status(error.statusCode).send({ message: error.message })
         }
     }
 }

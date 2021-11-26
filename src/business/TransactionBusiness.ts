@@ -1,3 +1,4 @@
+import { PayableDatabase } from "../data/PayableDatabase"
 import { CustomError } from "../error/CustomError"
 import { Transaction } from "../models/Transaction"
 import { IdGenerator } from "../services/IdGenerator"
@@ -19,73 +20,95 @@ export class TransactionBusiness {
     constructor(
         private idGenerator: IdGenerator,
         private transactionDatabase: ITransactionDatabase,
-        private payableBusiness: PayableBusiness
+        private payableBusiness: PayableBusiness,
+        private payableDatabase: PayableDatabase
     ) { }
 
     public async createTransactionLogic(transaction: TransactionDTO): Promise<void> {
 
-        const {
-            value,
-            description,
-            paymentMethod,
-            cardNumber,
-            cardOwner,
-            cardExpDate,
-            cardCVV
-        } = transaction
+        try {
+
+            const {
+                value,
+                description,
+                paymentMethod,
+                cardNumber,
+                cardOwner,
+                cardExpDate,
+                cardCVV
+            } = transaction
 
 
-        if (
-            !value ||
-            !description ||
-            !paymentMethod ||
-            !cardNumber ||
-            !cardOwner ||
-            !cardExpDate ||
-            !cardCVV
-        ) {
-            throw new CustomError('Missing inputs')
+            if (
+                !value ||
+                !description ||
+                !paymentMethod ||
+                !cardNumber ||
+                !cardOwner ||
+                !cardExpDate ||
+                !cardCVV
+            ) {
+                throw new CustomError('Missing inputs')
+            }
+
+            const id: string = this.idGenerator.generate()
+
+            const cardLast4Digits: number = Number(cardNumber.toString().slice(-4))
+
+            const newTransaction = new Transaction(
+                id,
+                value,
+                description,
+                Transaction.stringToPaymentMethod(paymentMethod),
+                cardLast4Digits,
+                cardOwner.toUpperCase(),
+                cardExpDate,
+                cardCVV
+            )
+
+            // Before persisting the transaction, we create a new payable with its own validations
+            const payable = this.payableBusiness.createPayableLogic(newTransaction)
+            await this.transactionDatabase.createTransaction(newTransaction)
+            await this.payableDatabase.createPayable(payable)
+
+
+        } catch (error: any) {
+            throw new CustomError(error.message)
         }
 
-        const id: string = this.idGenerator.generate()
 
-        const cardLast4Digits: number = Number(cardNumber.toString().slice(-4))
-
-        const newTransaction = new Transaction(
-            id,
-            value,
-            description,
-            paymentMethod,
-            cardLast4Digits,
-            cardOwner,
-            cardExpDate,
-            cardCVV
-        )
-        
-        // Before persisting the transaction, we create a new payable with its own validations
-        await this.payableBusiness.createPayableLogic(newTransaction)
-
-        await this.transactionDatabase.createTransaction(newTransaction)
     }
 
     public async getTransactions(): Promise<TransactionDTO[]> {
 
-        const transactions = await this.transactionDatabase.getTransactions()
+        try {
 
-        const result: TransactionDTO[] = transactions.map(transaction => {
-            return {
-                id: transaction.id,
-                value: transaction.value,
-                description: transaction.description,
-                paymentMethod: transaction.payment_method,
-                cardNumber: transaction.card_number,
-                cardOwner: transaction.card_owner,
-                cardExpDate: transaction.card_exp_date,
-                cardCVV: transaction.card_CVV
+            const transactions = await this.transactionDatabase.getTransactions()
+
+            if (!transactions.length) {
+                throw new CustomError('No transaction found', 404)
             }
-        })
 
-        return result
+            const result: TransactionDTO[] = transactions.map(transaction => {
+                return {
+                    id: transaction.id,
+                    value: transaction.value,
+                    description: transaction.description,
+                    paymentMethod: transaction.payment_method,
+                    cardNumber: transaction.card_number,
+                    cardOwner: transaction.card_owner,
+                    cardExpDate: transaction.card_exp_date,
+                    cardCVV: transaction.card_CVV
+                }
+            })
+
+            return result
+
+        } catch (error: any) {
+            throw new CustomError(error.message)
+        }
+
+
     }
 
 }

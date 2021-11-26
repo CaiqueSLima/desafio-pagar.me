@@ -12,7 +12,7 @@ export interface PayableData {
 
 export class PayableDatabase extends BaseDatabase implements IPayableDatabase {
 
-    private static TABLE_NAME = 'pagar.me_payables'
+    private static TABLE_NAME = 'pagar_me_payables'
 
     public async createPayable(payable: Payable): Promise<void> {
 
