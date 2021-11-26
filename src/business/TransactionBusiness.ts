@@ -1,7 +1,11 @@
 import { CustomError } from "../error/CustomError"
 import { Transaction } from "../models/Transaction"
 import { IdGenerator } from "../services/IdGenerator"
+import { PayableBusiness } from "./PayableBusiness"
 import { ITransactionDatabase } from "./ports/ITransactionDatabase"
+
+
+const payableBusiness = new PayableBusiness(new IdGenerator())
 
 export interface TransactionInputDTO {
     value: number
@@ -45,23 +49,12 @@ export class TransactionBusiness {
             throw new CustomError('Missing inputs')
         }
 
-        const payableId: string = this.idGenerator.generate()
-        let payableStatus: string = ''
-
-        if (paymentMethod.toLowerCase() === 'debit_card') {
-            payableStatus = 'paid'
-        } else if (paymentMethod.toLowerCase() === 'credit_card') {
-            payableStatus = 'waiting_funds'
-        } else {
-            throw new CustomError('Invalid payment method')
-        }
-
-        const transactionId: string = this.idGenerator.generate()
+        const id: string = this.idGenerator.generate()
 
         const cardLast4Digits: number = Number(cardNumber.toString().slice(-4))
 
         const newTransaction = new Transaction(
-            transactionId,
+            id,
             value,
             description,
             paymentMethod,
@@ -70,11 +63,10 @@ export class TransactionBusiness {
             cardExpDate,
             cardCVV
         )
-
-
-
-
-
+        
+        // Before persisting the transaction, we create a new payable with its own validations
+        await payableBusiness.createPayable(newTransaction)
+        
         await this.transactionDatabase.createTransaction(newTransaction)
 
     }

@@ -35,7 +35,7 @@ export class Transaction {
             case 'debit_card':
                 return PaymentMethod.DEBIT_CARD;
             default:
-                throw new CustomError('Invalid card type')
+                throw new CustomError('Invalid payment method')
         }
     }
 

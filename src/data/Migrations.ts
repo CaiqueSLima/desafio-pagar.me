@@ -19,7 +19,7 @@ abstract class Migrations extends BaseDatabase {
                     id VARCHAR(255) PRIMARY KEY,
                     value DOUBLE(10,2) NOT NULL,
                     status VARCHAR(255) NOT NULL,
-                    payment_date VARCHAR(255) NOT NULL,
+                    payment_date DATE NOT NULL,
                     transaction_id VARCHAR(255) NOT NULL,
                     FOREIGN KEY (transaction_id) REFERENCES pagar.me_transactions(id)
                 );

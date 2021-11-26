@@ -5,13 +5,6 @@ export enum PayableStatus {
     WAITING_FUNDS = 'waiting_funds'
 }
 
-export interface PayableData {
-    id: string
-    value: number
-    status: string
-    paymentDate: string
-}
-
 export class Payable {
 
     constructor(
@@ -37,12 +30,17 @@ export class Payable {
         }
     }
 
-    public static toPayableModel(payable: PayableData): Payable {
+    public static toPayableModel(
+        id: string,
+        value: number,
+        status: string,
+        paymentDate: string
+    ): Payable {
         return new Payable(
-            payable.id,
-            payable.value, 
-            Payable.stringToStatus(payable.status),
-            payable.paymentDate
+            id,
+            value, 
+            Payable.stringToStatus(status),
+            paymentDate
         )
     }
 }

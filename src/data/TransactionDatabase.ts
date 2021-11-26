@@ -35,7 +35,7 @@ export class TransactionDatabase extends BaseDatabase implements ITransactionDat
 
     public async getTransactions(): Promise<TransactionData[]> {
 
-        const result = await BaseDatabase.connection(TransactionDatabase.TABLE_NAME).select().orderBy('')
+        const result = await BaseDatabase.connection(TransactionDatabase.TABLE_NAME).select()
 
         return result
     }
