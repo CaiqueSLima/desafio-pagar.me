@@ -9,7 +9,7 @@ const payableBusiness = new PayableBusiness(
 )
 
 export class PayableController {
-    public async create(req: Request, res: Response): Promise<void> {
+    public async getBalance(req: Request, res: Response): Promise<void> {
         try {
 
             const result: BalanceOutputDTO = await payableBusiness.getBalance() 
