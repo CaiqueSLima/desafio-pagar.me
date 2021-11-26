@@ -24,4 +24,8 @@ export class PayableDatabase extends BaseDatabase {
         await BaseDatabase.connection(PayableDatabase.TABLE_NAME).insert(payableToDB)
     }
 
+    public async getPayables(): Promise<PayableData[]> {
+        return await BaseDatabase.connection(PayableDatabase.TABLE_NAME).select()
+    }
+
 }

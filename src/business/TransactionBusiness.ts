@@ -1,3 +1,4 @@
+import { PayableDatabase } from "../data/PayableDatabase"
 import { CustomError } from "../error/CustomError"
 import { Transaction } from "../models/Transaction"
 import { IdGenerator } from "../services/IdGenerator"
@@ -5,7 +6,7 @@ import { PayableBusiness } from "./PayableBusiness"
 import { ITransactionDatabase } from "./ports/ITransactionDatabase"
 
 
-const payableBusiness = new PayableBusiness(new IdGenerator())
+const payableBusiness = new PayableBusiness(new IdGenerator(), new PayableDatabase())
 
 export interface TransactionInputDTO {
     value: number
@@ -65,13 +66,12 @@ export class TransactionBusiness {
         )
         
         // Before persisting the transaction, we create a new payable with its own validations
-        await payableBusiness.createPayable(newTransaction)
-        
+        await payableBusiness.createPayableLogic(newTransaction)
+
         await this.transactionDatabase.createTransaction(newTransaction)
 
     }
 
 }
-
 
 
