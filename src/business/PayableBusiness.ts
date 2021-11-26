@@ -1,8 +1,8 @@
-import { PayableDatabase } from "../data/PayableDatabase"
 import { CustomError } from "../error/CustomError"
 import { Payable } from "../models/Payables"
 import { Transaction } from "../models/Transaction"
 import { IdGenerator } from "../services/IdGenerator"
+import { IPayableDatabase } from "./ports/IPayableDatabase"
 
 export interface BalanceOutputDTO {
     available: number
@@ -13,7 +13,7 @@ export class PayableBusiness {
 
     constructor(
         private idGenerator: IdGenerator,
-        private payableDatabase: PayableDatabase
+        private payableDatabase: IPayableDatabase
     ) { }
 
     public createPayableLogic(transaction: Transaction): Payable {

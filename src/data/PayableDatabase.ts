@@ -30,5 +30,4 @@ export class PayableDatabase extends BaseDatabase implements IPayableDatabase {
     public async getPayables(): Promise<PayableData[]> {
         return await BaseDatabase.connection(PayableDatabase.TABLE_NAME).select()
     }
-
 }

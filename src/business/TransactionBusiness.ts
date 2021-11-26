@@ -1,8 +1,8 @@
-import { PayableDatabase } from "../data/PayableDatabase"
 import { CustomError } from "../error/CustomError"
 import { Transaction } from "../models/Transaction"
 import { IdGenerator } from "../services/IdGenerator"
 import { PayableBusiness } from "./PayableBusiness"
+import { IPayableDatabase } from "./ports/IPayableDatabase"
 import { ITransactionDatabase } from "./ports/ITransactionDatabase"
 
 export interface TransactionDTO {
@@ -21,7 +21,7 @@ export class TransactionBusiness {
         private idGenerator: IdGenerator,
         private transactionDatabase: ITransactionDatabase,
         private payableBusiness: PayableBusiness,
-        private payableDatabase: PayableDatabase
+        private payableDatabase: IPayableDatabase
     ) { }
 
     public async createTransactionLogic(transaction: TransactionDTO): Promise<void> {
@@ -40,7 +40,7 @@ export class TransactionBusiness {
 
 
             if (
-                !value ||
+                (!value || value <= 0) ||
                 !description ||
                 !paymentMethod ||
                 !cardNumber ||
@@ -48,7 +48,15 @@ export class TransactionBusiness {
                 !cardExpDate ||
                 !cardCVV
             ) {
-                throw new CustomError('Missing inputs')
+                throw new CustomError('Missing inputs or invalid value')
+            }
+
+            if (cardNumber.toString().length !== 16) {
+                throw new CustomError('Invalid Card Number')
+            }
+
+            if (cardCVV.toString().length !== 3) {
+                throw new CustomError('Invalid CVV')
             }
 
             const id: string = this.idGenerator.generate()
