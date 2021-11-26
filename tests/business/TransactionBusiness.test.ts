@@ -13,7 +13,7 @@ const transactionBusiness = new TransactionBusiness(
     new PayableDatabaseMock()
 )
 
-describe('Testing Transaction Business class', () => {
+describe('Testing Transaction Business creating transactions', () => {
 
     test('Testing missing input, must return an error', async () => {
         const input = { ...transactionInputDTOMock, cardOwner: ''}
@@ -59,6 +59,17 @@ describe('Testing Transaction Business class', () => {
         }
     })
 
+    test('Testing invalid payment method, must return an error', async () => {
+        const input = { ...transactionInputDTOMock, paymentMethod: 'boleto'}
+        expect.assertions(2)
+        try {
+            await transactionBusiness.createTransactionLogic(input)
+        } catch (error: any) {
+            expect(error.statusCode).toBe(400)
+            expect(error.message).toEqual('Invalid payment method')
+        }
+    })
+
     test('Testing success case, should return nothing', async () => {
         const input = transactionInputDTOMock
         expect.assertions(1)
@@ -70,3 +81,4 @@ describe('Testing Transaction Business class', () => {
         }
     })
 })
+
