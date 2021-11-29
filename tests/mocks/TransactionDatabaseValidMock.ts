@@ -1,6 +1,6 @@
 import { TransactionData } from "../../src/data/TransactionDatabase"
 import { Transaction } from "../../src/models/Transaction"
-import { mockTransCredit, mockTransDebit } from "./TransactionsMock"
+import { mockTransCreditFromDB, mockTransDebitFromDB } from "./TransactionsMock"
 
 export class TransactionDatabaseValidMock {
 
@@ -9,7 +9,7 @@ export class TransactionDatabaseValidMock {
 
     public async getTransactions(): Promise<TransactionData[]> {
 
-        const result = [mockTransCredit, mockTransDebit]
+        const result = [mockTransCreditFromDB, mockTransDebitFromDB]
 
         return result
     }
