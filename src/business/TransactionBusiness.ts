@@ -113,7 +113,7 @@ export class TransactionBusiness {
             return result
 
         } catch (error: any) {
-            throw new CustomError(error.message)
+            throw new CustomError(error.message, error.statusCode)
         }
     }
 }
