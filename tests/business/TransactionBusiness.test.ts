@@ -1,19 +1,28 @@
 import { PayableBusiness } from "../../src/business/PayableBusiness"
 import { TransactionBusiness } from "../../src/business/TransactionBusiness"
+import { TransactionDatabase } from "../../src/data/TransactionDatabase"
 import { IdGeneratorMock } from "../mocks/IdGeneratorMock"
 import { PayableBusinessMock } from "../mocks/PayableBusinessMock"
 import { PayableDatabaseMock } from "../mocks/PayableDatabaseMock"
-import { TransactionDatabaseMock } from "../mocks/TransactionDatabaseMock"
-import { transactionInputDTOMock } from "../mocks/TransactionsMock"
+import { TransactionDatabaseEmptyMock } from "../mocks/TransactionDatabaseEmptyMock"
+import { TransactionDatabaseValidMock } from "../mocks/TransactionDatabaseValidMock"
+import { mockTransCredit, mockTransDebit, transactionInputDTOMock } from "../mocks/TransactionsMock"
 
 const transactionBusiness = new TransactionBusiness(
     new IdGeneratorMock(),
-    new TransactionDatabaseMock(),
+    new TransactionDatabaseValidMock(),
     new PayableBusinessMock() as PayableBusiness,
     new PayableDatabaseMock()
 )
 
-describe('Testing Transaction Business class', () => {
+const transactionBusiness2 = new TransactionBusiness(
+    new IdGeneratorMock(),
+    new TransactionDatabaseEmptyMock(),
+    new PayableBusinessMock() as PayableBusiness,
+    new PayableDatabaseMock()
+)
+
+describe('Testing Transaction Business creating transactions', () => {
 
     test('Testing missing input, must return an error', async () => {
         const input = { ...transactionInputDTOMock, cardOwner: ''}
@@ -59,6 +68,17 @@ describe('Testing Transaction Business class', () => {
         }
     })
 
+    test('Testing invalid payment method, must return an error', async () => {
+        const input = { ...transactionInputDTOMock, paymentMethod: 'boleto'}
+        expect.assertions(2)
+        try {
+            await transactionBusiness.createTransactionLogic(input)
+        } catch (error: any) {
+            expect(error.statusCode).toBe(400)
+            expect(error.message).toEqual('Invalid payment method')
+        }
+    })
+
     test('Testing success case, should return nothing', async () => {
         const input = transactionInputDTOMock
         expect.assertions(1)
@@ -67,6 +87,28 @@ describe('Testing Transaction Business class', () => {
             expect(result).toBeUndefined()
         } catch (error: any) {
             console.log(error)
+        }
+    })
+})
+
+describe('Testing Transaction Business getting transactions', () => {
+
+    test('Testing getting transactions, must return an array of transactions', async () => {
+        try {
+            const result = await transactionBusiness.getTransactions()
+            expect(result).toEqual([mockTransCredit, mockTransDebit])
+        } catch (error: any) {
+            console.log(error)
+        }
+    })
+
+    test('Testing getting transactions, must return an error', async () => {
+        expect.assertions(2)
+        try {
+            await transactionBusiness2.getTransactions()
+        } catch (error: any) {
+            expect(error.statusCode).toBe(404)
+            expect(error.message).toEqual('No transaction found')
         }
     })
 })
