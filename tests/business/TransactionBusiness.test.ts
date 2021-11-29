@@ -1,12 +1,11 @@
 import { PayableBusiness } from "../../src/business/PayableBusiness"
 import { TransactionBusiness } from "../../src/business/TransactionBusiness"
-import { TransactionDatabase } from "../../src/data/TransactionDatabase"
 import { IdGeneratorMock } from "../mocks/IdGeneratorMock"
 import { PayableBusinessMock } from "../mocks/PayableBusinessMock"
 import { PayableDatabaseMock } from "../mocks/PayableDatabaseMock"
 import { TransactionDatabaseEmptyMock } from "../mocks/TransactionDatabaseEmptyMock"
 import { TransactionDatabaseValidMock } from "../mocks/TransactionDatabaseValidMock"
-import { mockTransCredit, mockTransDebit, transactionInputDTOMock } from "../mocks/TransactionsMock"
+import { mockTransCreditFromDB, mockTransDebitFromDB, transactionInputDTOMock } from "../mocks/TransactionsMock"
 
 const transactionBusiness = new TransactionBusiness(
     new IdGeneratorMock(),
@@ -96,7 +95,7 @@ describe('Testing Transaction Business getting transactions', () => {
     test('Testing getting transactions, must return an array of transactions', async () => {
         try {
             const result = await transactionBusiness.getTransactions()
-            expect(result).toEqual([mockTransCredit, mockTransDebit])
+            expect(result).toEqual([mockTransCreditFromDB, mockTransDebitFromDB])
         } catch (error: any) {
             console.log(error)
         }

@@ -1,7 +1,8 @@
 import { TransactionDTO } from "../../src/business/TransactionBusiness"
 import { TransactionData } from "../../src/data/TransactionDatabase"
+import { Transaction } from "../../src/models/Transaction"
 
-export const mockTransDebit: TransactionData = {
+export const mockTransDebitFromDB: TransactionData = {
     id: 'debit_1',
     value: 100,
     description: 'Debit Transaction from DB',
@@ -12,7 +13,7 @@ export const mockTransDebit: TransactionData = {
     card_CVV: 123
 }
 
-export const mockTransCredit: TransactionData = {
+export const mockTransCreditFromDB: TransactionData = {
     id: 'credit_1',
     value: 200,
     description: 'Credit Transaction from DB',
@@ -32,3 +33,25 @@ export const transactionInputDTOMock: TransactionDTO = {
     cardExpDate: '12/21',
     cardCVV: 123
 }
+
+export const mockTransCredit = new Transaction(
+    'credit_1',
+    200,
+    'Credit Transaction',
+    'credit_card',
+    1111,
+    'CAÍQUE LIMA',
+    '12/21',
+    123
+)
+
+export const mockTransDebit = new Transaction(
+    'debit_1',
+    100,
+    'Debit Transaction',
+    'debit_card',
+    1111,
+    'CAÍQUE LIMA',
+    '12/21',
+    123
+)

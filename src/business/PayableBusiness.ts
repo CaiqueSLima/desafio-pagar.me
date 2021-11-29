@@ -86,7 +86,7 @@ export class PayableBusiness {
             return balance
 
         } catch (error: any) {
-            throw new CustomError(error.message)
+            throw new CustomError(error.message, error.statusCode)
         }
     }
 }
