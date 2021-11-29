@@ -52,3 +52,78 @@ Você deve criar um serviço com os seguintes requisitos:
 2. O serviço deve armazenar informações em um banco de dados. Você pode escolher o banco que achar melhor. Aqui no Pagar.me usamos amplamente PostgreSQL
 3. O projeto deve ter um README.md com todas as instruções sobre como executar e testar o projeto e os serviços disponibilizados.
 4. O projeto deve conter testes automatizados.
+
+## Install
+
+```sh
+npm install
+```
+
+## Run Dev
+
+```sh
+npm run dev
+```
+
+## Run Test
+
+```sh
+npm run test
+```
+
+## Run Start
+
+```sh
+npm start
+```
+
+## ENDPOINTS
+
+ ### Create Transaction
+  * Method: POST
+  * Path: `/transactions/create`
+  * Body: (all items are mandatory)
+```
+     { 
+      "value": 100,
+      "description": "Sample description",
+      "paymentMethod": "debit_card" or "credit_card",
+      "cardNumber": 1234567812345678, //must have 16 characters
+      "cardOwner": "Caíque Lima",
+      "cardCVV": 123 //must have 3 characters
+     }
+```
+
+### Get Transactions
+  * Method: GET
+  * Path: `/transactions/all`
+  * Response: (Error if nothing is found)
+  ```
+  {
+    "transactions": [
+         {
+            "id": "78640804-418d-46db-b22b-83a7f06daeec",
+            "value": 100,
+            "description": "Sample description",
+            "paymentMethod": "debit_card",
+            "cardNumber": 5678,
+            "cardOwner": "Caíque Lima",
+            "cardCVV": 123
+        },
+     ...
+    ]
+  }
+```
+
+### Get Balance
+  * Method: GET
+  * Path: `/balance`
+  * Response: (Error if no payable is found)
+  ```
+   {
+      "balance": {
+            "available": 95,
+            "waitingFunds": 190,
+       }
+   }
+```
