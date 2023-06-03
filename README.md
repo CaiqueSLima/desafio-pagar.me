@@ -77,6 +77,12 @@ npm run test
 npm start
 ```
 
+## Run Migrations
+
+```sh
+npm run migrations
+```
+
 ## ENDPOINTS
 
  ### Create Transaction
